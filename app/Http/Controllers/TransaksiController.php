@@ -54,31 +54,46 @@ class TransaksiController extends Controller
     {
         // Ambil semua data transaksi dari database
         $transactions = Transaksi::with('pelanggan')->latest()->get();
+
         // Kirim data ke view
         return view('read_transaction', compact('transactions'));
     }
 
     public function edit($id)
     {
-        $transaction = Transaksi::findOrFail($id);
-        return view('transactions.edit_transaction', compact('transaction'));
+        $transaction = Transaksi::with('pelanggan')->findOrFail($id);
+        return view('edit_transaction', compact('transaction'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'pelanggan_id' => 'required',
-            'jenis_transaksi' => 'required',
-            'nomor_akte' => 'required',
-            'keterangan' => 'required',
-            'status_proses' => 'required',
-            'biaya' => 'required|numeric',
-        ]);
+        try {
+
+            $request->validate([
+                // 'pelanggan_id' => 'required',
+                'jenis_transaksi' => 'required',
+                'nomor_akte' => 'required',
+                'keterangan' => 'required',
+                'biaya' => 'required|numeric',
+            ]);
+        } catch (Exception $e) {
+            dd($e);
+
+        }
 
         $transaction = Transaksi::findOrFail($id);
         $transaction->update($request->all());
 
         return redirect()->route('read.transactions')->with('success', 'Transaction updated successfully!');
+    }
+
+
+    public function delete(Request $request, $id)
+    {
+        $transaction = Transaksi::findOrFail($id);
+        $transaction->delete();
+
+        return redirect()->route('read.transactions')->with('success', 'Transaction Deleted successfully!');
     }
 
 }

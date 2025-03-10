@@ -44,12 +44,13 @@ Route::get('/read_transaction', function () {
     return view('read_transaction'); // Ganti dengan nama view yang sesuai
 })->name('read.transaction.user');
 
-
+// Route untuk menampilkan halaman edit
 Route::get('/transactions/{id}/edit', [TransaksiController::class, 'edit'])->name('transactions.edit');
-Route::delete('/transactions/{id}', [TransaksiController::class, 'destroy'])->name('transactions.destroy');
 
+// Route untuk update data (PUT)
 Route::put('/transactions/{id}', [TransaksiController::class, 'update'])->name('transactions.update');
 
+Route::delete('/transactions/{id}', [TransaksiController::class, 'delete'])->name('transactions.delete');
 
 // Menyimpan data transaksi dan pengguna
 Route::post('/create-transaction-user', [TransaksiController::class, 'store'])->name('create-transaction-user.store');
